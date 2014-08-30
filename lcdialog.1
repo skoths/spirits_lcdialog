@@ -1,0 +1,121 @@
+.TH lcdialog 1  "July 2014" "V1.0" "USER COMMANDS"
+.SH NAME
+LCDialog \- LCD version of dialog.
+.SH SYNOPSIS
+.B lcdialog
+[\-\-init] [\-\-clear] [\-\-notag] [\-\-bgimg filename] [\-\-bglight color] [\-\-font\-medium] [\-\-font-large] [\-h | \-\-help] output\-options
+.SH DESCRIPTION
+Dialog is a program to create text\-boxes in bash scripts. LCDialog is a tool for embedded graphic lcds, 
+for example, on a Raspberry Pi. The graphic display is a DOGM 132x32 pixel LCD. GPIO's and a SPI will 
+be used to control the output, the LED backlight and read the button's.
+
+.SH OPTIONS
+.TP
+.BI \-\-ok " text"
+3/4 of screen displays text and one ok button.
+.TP
+.BI \-\-info " text"
+Whole screen displays text without button interaction.
+.TP
+.BI \-\-yesno " text"
+3/4 of screen displays text with 2 buttons (Yes/No).
+.TP
+.BI \-\-menu " tag item [tag item] ..."
+3/4 of screen displays menu option with navigation buttons.
+.TP
+.BI \--ipv4 " ipv4 [text]"
+Input according to IPv4 address pattern.
+.TP
+.BI \-\-subnetmask " subnet\-mask [text]"
+Input according to IPv4 subnet mask pattern.
+.TP
+.BI \-\-buttonwait
+No visual output, just wait for a button-event and set the exit code.
+.TP
+.BI \-\-intinput " text start-value [def.-max]"
+A integer can be entered with the buttons (only positive, and max. 9 digits).
+.TP
+.BI \-\-progress " text start-percent"
+Displays a process-bar on the LCD. the value can be updated by stdin (percentage per line).
+the triple x (XXX) syntax is supported as well.
+.TP
+.BI \-\-percent " text (percent | value min max )"
+Displays a percent-bar on the LCD. the value can be set with the left and
+right buttons. the value can only be accepted, not canceled. the resulting
+value is always a percentage.
+
+.TP
+.TP
+.B Addon options
+.TP
+.B \-\-init
+Each LCD needs a init-sequenze to set the hardware up.
+The LCD only needs to be initialized once it is powered, to avoid flickering between
+screens. The LCD only needs to be initialized once at the beginning of the script.
+.TP
+.B \-\-uninit
+Releases all used resources (GPIO and SPI).
+.TP
+.B \-\-clear
+As it suggests, the LCD will be cleared. all pixels will be switched off.
+.TP
+.B \-\-notag
+Doesn't show the tag in menu line.
+.TP
+.B \-\-stepwidth value
+Increment for "\-\-percent", default is 5.
+.TP
+.B \-\-singlestep
+In mode "\-\-percent" every change will output the value and exit with EXITCODE_EXTRA.
+.TP
+.BI \-\-bgimg " filename"
+Set filename for background image.
+.TP
+.BI \-\-bglight " color\-code"
+Sets the LED background-color as a 1-Bit color value.
+
+Bit-0: red
+
+Bit-1: green
+
+Bit-2: blue
+
+0=off, 7=all on (white).
+
+e.g. for blue and green ...  \-\-bglight 6 ...
+
+.TP
+.B \-\-font\-medium
+Select medium size font (11-px high).
+.TP
+.B \-\-font\-large
+Select large size font (23-px high).
+.TP
+No option will set the default font (7-px high).
+
+.SH NOTES
+Everyone uses Unicode, we don't. Our font-set takes 8-Bit to encode the characters.
+But for convenience, all UTF-8 input will be automaticaly converted down to ISO-8859-1.
+
+.SH EXIT STATUS
+The exitcode depends on the button pressed or if some error occurred.
+Ok, Yes and a Menu-selection will result in 0 (EXITCODE_OK). Cancel or No will be 1 (EXITCODE_CANCEL).
+In Error conditions -1 (EXITCODE_ERROR) is returned.
+The help output returns 2 (EXITCODE_HELP). A optional extra button results in 3
+(EXITCODE_EXTRA).
+
+.SH COPYRIGHT
+Copyright \(co 2014 Stephan Ruloff.
+.br
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; in version 2 only
+of the License. <http://gnu.org/licenses/gpl-2.0>.
+.br
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+.SH AUTHOR
+Stephan Ruloff (stephan (at) rk-tech.org)

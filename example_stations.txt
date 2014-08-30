@@ -1,0 +1,9 @@
+01 Eurodance http://pub6.di.fm/di_eurodance?type=.mp3
+02 Einslive http://gffstream.ic.llnwd.net/stream/gffstream_stream_wdr_einslive_b
+03 DASDING http://swr.ic.llnwd.net:80/stream/swr_mps_m_dasdinga
+04 SR-1 http://gffstream.ic.llnwd.net/stream/gffstream_mp3_w57b
+05 Bayer1 http://br-mp3-bayern1obb-s.akacast.akamaistream.net/7/243/142690/v1/gnl.akacast.akamaistream.net/br_mp3_bayern1obb_s
+06 MDRJump http://c22033-ls.i.core.cdn.streamfarm.net/T3R6XGogC9922033/22033mdr/live/app2128740352/w2128904194/live_de_128.mp3
+07 RadioEinsRbb http://rbb-mp3-radioeins-m.akacast.akamaistream.net/7/854/292097/v1/gnl.akacast.akamaistream.net/rbb_mp3_radioeins_m
+08 NJoy http://ndr-n-joy-mp3.akacast.akamaistream.net/7/665/273752/v1/gnl.akacast.akamaistream.net/ndr_n-joy_mp3
+09 RadioBremen http://rb-mp3-m-bremeneins.akacast.akamaistream.net/7/716/234436/v1/gnl.akacast.akamaistream.net/rb-mp3-m-bremeneins

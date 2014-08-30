@@ -1,0 +1,132 @@
+.TH lcdialog 1  "Juli 2014" "V1.0" "USER COMMANDS"
+.SH BEZEICHNUNG
+LCDialog \- LCD Version von dialog.
+.SH ÜBERSICHT
+.B lcdialog
+[\-\-init] [\-\-clear] [\-\-notag] [\-\-bgimg filename] [\-\-bglight color] [\-\-font\-medium] [\-\-font-large] [\-h | \-\-help] output\-options
+.SH BESCHREIBUNG
+Dialog ist ein Programm um Text\-Boxen in Bash Skripten zu erstellen. LCDialog ist das
+Werkzeug für eingebettete Grafik-Displays, wie zum Beispiel, an einem Raspberry
+Pi.
+Das Grafikdisplay ist ein DOGM 132x32 Pixel. Mit GPIO's und dem SPI werden
+die Ausgänge für Daten und die Hintergrundbeleuchtung gesteuert und die
+Taster eingelesen.
+Dadurch das nur Standard API's von Linux verwendet werden sollte das Display 
+auch mit anderen Board, wie z.B. Beagle-Board-Black, Banana PI o.ä. kompatibel sein.
+Es ist nur nötig das "/dev/spidev" und "/sys/class/gpio/" bereitstehen.
+
+
+.SH OPTIONEN
+.TP
+.BI \-\-ok " text"
+Zeigt 3/4 Text auf dem Display mit einem Ok Knopf.
+.TP
+.BI \-\-info " text"
+Das komplette Display kann für die Ausgabe genutzt werden. Es werden keine
+Taster abgefragt.
+.TP
+.BI \-\-yesno " text"
+Zwigt 3/4 Text auf dem Display mit 2 Knöpfen (Ja/Nein)
+.TP
+.BI \-\-menu " tag item [tag item] ..."
+Zeigt 3/4 Text auf dem Display als Menü, mit Tastennavigation .
+.TP
+.BI \--ipv4 " ipv4 [text]"
+Eingabe nach Format einer IPv4 Adresse.
+.TP
+.BI \-\-subnetmask " subnet-mask [text]"
+Eingabe nach Format einer IPv4 Subnetzmaske.
+.TP
+.BI \-\-buttonwait
+Keine Ausgabe, nur die Taste per Exit-Code anzeigen.
+.TP
+.BI \-\-intinput " text start-value [def.-max]"
+Eine Ganzzahl (integer) kann eingegben werden (nur positive Zahlen und maximal 9 Stellen).
+.TP
+.BI \-\-progress " text start-wert"
+Zeigt einen Fortschrittsbalken auf dem Display. Über die Standard-Eingabe kann ein neuer Wert für Anzeige gesendet werden.
+Pro Zeile wird ein Prozentwert akzeptiert. Zusätzlich wird auch der Triple x (XXX) Syntax verstanden.
+.TP
+.BI \-\-percent " text (percent | value min max )"
+Zeigt einen einstellbare Prozentbalken auf dem Display. Mit den links und rechts Tastern kann der Wert verstellt werden.
+Der eingegebene Wert kann nur bestätigt werden, ein Abbruch ist nicht vorgesehen.
+Die Ausgabe ist immer ein Prozent-Wert (wie die Anzeige).
+
+
+.TP
+.TP
+.B Addon options
+.TP
+.B \-\-init
+Um die Hardware einzurichten braucht das Display eine Initialisierung.
+Die Init-Sequenz ist nur einmal nach dem Einschalten nötig, da das Display zwischen
+zwei Bildern sonst flacken würde. Daher nur an Anfang von
+einem Skript einmal initialisieren.
+.TP
+.B \-\-uninit
+Gibt alle belegten Resourcen wieder frei (GPIO und SPI).
+.TP
+.B \-\-clear
+Wie man vermuten könnte, das Display wird am Ende gelöscht. Alle Pixel sind aus.
+.TP
+.B \-\-notag
+Zeigt kein "tag" in der Menüzeile.
+.TP
+.B \-\-stepwidth value
+Schrittweite für "\-\-percent", der Standard-Wert ist 5.
+.TP
+.B \-\-singlestep
+Im Mode "\-\-percent" wird bei jeder Änderung der Wert ausgegeben und mit EXITCODE_EXTRA beendet.
+.TP
+.BI \-\-bgimg " filename"
+Setzt den Dateinamen des Hintergrundbilds.
+.TP
+.BI \-\-bglight " color\-code"
+Setzt die Hintergrundfarbe der LED Beleuchtung, als ein-Bit Farbwert.
+
+Bit-0: Rot
+
+Bit-1: Grün
+
+Bit-2: Blau
+
+0=aus, 7=Alle an (Weiss).
+
+Beispiel: Für Blau und Grün ...  \-\-bglight 6 ...
+
+.TP
+.B \-\-font\-medium
+Nehme die mittlere Schrift (11-px hoch).
+.TP
+.B \-\-font\-large
+Nehme die große Schrift (23-px hoch).
+.TP
+Ohne Option wird die Standardschrift verwendet (7-px hoch).
+
+.SH HINWEIS
+Die Welt verwendet Unicode, wir nicht. Unsere Schriftart wird nur mit 8-Bit
+codiert. Zur Erleichterung werden alle Eingaben von UTF-8 automatisch in das
+interne ISO-8859-1 gewandelt.
+
+.SH EXIT STATUS
+Der Rückgabewert hängt von den ausgewählten Tastern ab, oder ob ein Fehler auftritt.
+Ok, ja oder eine Menüauswahl resultieren in 0 (EXITCODE_OK). Bei Abbruch oder nein gibt es 1 (EXITCODE_CANCEL).
+Bei Fehlern wird -1 (EXITCODE_ERROR) zurückgegeben. Der Hilfetext gibt 2 (EXITCODE_HELP) zurück. 
+Der optionale Zusatzrückgabewert ist 3 (EXITCODE_EXTRA).
+
+.SH COPYRIGHT
+Copyright \(co 2014 Stephan Ruloff.
+
+.br
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; in version 2 only
+of the License. <http://gnu.org/licenses/gpl-2.0>.
+.br
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+.SH AUTHOR
+Stephan Ruloff (stephan (at) rk-tech.org)
