@@ -22,6 +22,7 @@ SetBit()
 	echo "SETPORT $1.${Value[$1]}" > /dev/tcp/$AVR_IP/50290
 }
 
+$LCD --init
 while [ true ] ; do
 	C=`$LCD --menuindex $IDX --bglight 7 --menu 1 ${Value[1]} 2 ${Value[2]} 3 ${Value[3]} 4 ${Value[4]} \
 	5 ${Value[5]} 6 ${Value[6]} 7 ${Value[7]} 8 ${Value[8]} x Exit 2>&1`

@@ -5,6 +5,7 @@
 #
 # Source: https://developer.yahoo.com/weather/
 
+LCD=./lcdialog
 
 # Example:
 #<yweather:location city="Dusseldorf" region="NW"   country="Germany"/>
@@ -45,7 +46,7 @@ if [ -f $CACHE_FILE ] ; then
 else
 	AGE=$(($REFRESH + 1))
 fi
-./lcdialog --bglight $BGLIGHT --info "           Loading data ..."
+$LCD --init --bglight $BGLIGHT --info "           Loading data ..."
 if [ $AGE -gt $REFRESH ]; then
 	wget -q -O $CACHE_FILE "http://weather.yahooapis.com/forecastrss?w=$WOEID&u=$UNIT"
 fi
@@ -59,4 +60,4 @@ LINE=`cat $CACHE_FILE | grep yweather:condition`
 
 #echo "$TEMP C"
 #echo "$TEXT"
-./lcdialog $FONT --bglight $BGLIGHT --bgimg weathericons/$CODE.png:+90+0 --ok "$TEMP°C\n$TEXT"
+$LCD $FONT --bglight $BGLIGHT --bgimg weathericons/$CODE.png:+90+0 --ok "$TEMP°C\n$TEXT"

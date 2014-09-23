@@ -1,5 +1,6 @@
 #!/bin/bash
 
+LCD=./lcdialog
 
 # Version 1
 CPU=`grep 'cpu ' /proc/stat | awk '{usage=($2+$4)*100/($2+$4+$5)} END {printf("%1.0f%%", usage)}'`
@@ -25,5 +26,5 @@ RAM=`echo $((($RAMFREE*100) / $RAMTOTAL))`
 #echo "RAM: $RAM% free"
 LINE="CPU:\t$CPU used\nDisk:\t$DISK used\nTemp:\t$TEMPCPU °C\nRAM:\t$RAM% free"
 
-./lcdialog --init --bglight 7 --info "$LINE"
-./lcdialog --buttonwait
+$LCD --init --bglight 7 --info "$LINE"
+$LCD --buttonwait

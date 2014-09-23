@@ -6,12 +6,16 @@
 
 LCD=./lcdialog
 
+$LCD --init
+
 pidof raspistill > /dev/nul 2>&1
 if [ $? -eq 0 ] ; then
 	$LCD --bglight 7 --ok "raspistill is running\nplease wait and try again later."
 	exit 1
 fi
+
 $LCD --yesno "Taking time lapse pictures?"
+
 if [ $? -eq 0 ] ; then
 	TIME_TOTAL_MIN=`$LCD --bglight 7 --intinput "How long (in minutes)" 1 1440 2>&1`
 	if [ $? -eq 0 ] ; then

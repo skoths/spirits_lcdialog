@@ -11,6 +11,8 @@ the beagle-board-black, banana pi or other.
 
 http://www.rk-tech.org
 
+https://github.com/rstephan/lcdialog/wiki
+
 yesno
 -----
 
