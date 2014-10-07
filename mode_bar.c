@@ -28,6 +28,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include "lcd.h"
 #include "screen.h"
 #include "lcdialog.h"
+#include "conv_str.h"
 
 double GetPercent(char *str)
 {
@@ -71,6 +72,7 @@ int Progress(LcdSpi *lcd, Fonts *f, char *text, ScreenData *screenBg, int optind
 	ScreenData *screen;
 	char output[30];
 	char input[32];
+	char *inputIso;
 	int posY;
 	int fontHeight;
 	int barHeight;
@@ -164,7 +166,8 @@ int Progress(LcdSpi *lcd, Fonts *f, char *text, ScreenData *screenBg, int optind
 				if (lineCount == 0) {
 					percent = GetPercent(input);
 				} else {
-					fontHeight = FontStringY(f->mText, input);
+					inputIso = StrdupConv(input);
+					fontHeight = FontStringY(f->mText, inputIso);
 					posY = fontHeight * (lineCount - 1);
 					if (lineCount > 1) {
 						posY++;
@@ -173,7 +176,8 @@ int Progress(LcdSpi *lcd, Fonts *f, char *text, ScreenData *screenBg, int optind
 					viewPort.mY = posY;
 					viewPort.mHeight = LCD_Y - barHeight;
 					viewPort.mWidth = LCD_X - viewPort.mY;
-					FontScreenStringVp(f->mText, screen, viewPort, input, 0, JUSTIFY_LEFT);
+					FontScreenStringVp(f->mText, screen, viewPort, inputIso, 0, JUSTIFY_LEFT);
+					free(inputIso);
 				}
 				lineCount++;	
 			}
@@ -200,6 +204,7 @@ int Progress(LcdSpi *lcd, Fonts *f, char *text, ScreenData *screenBg, int optind
 		
 		LcdWriteImageScreen(lcd, screen);
 	}
+	ScreenDestroy(screen);
 	if (feof(fIn)) {
 		return result;
 	}
@@ -326,6 +331,7 @@ int Percent(LcdSpi *lcd, Fonts *f, char *text, ScreenData *screenBg, int optind,
 		}
 		valueOld = value;
 	}
+	ScreenDestroy(screen);
 	if (localEnd) {
 		return result;
 	}

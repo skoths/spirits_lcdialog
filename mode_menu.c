@@ -28,6 +28,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include "font.h"
 #include "lcdialog.h"
 #include "screen.h"
+#include "conv_str.h"
 
 int Menu(LcdSpi *lcd, Fonts *f, ScreenData *screenBg, int optind, int argc, char **argv)
 {
@@ -91,7 +92,7 @@ int Menu(LcdSpi *lcd, Fonts *f, ScreenData *screenBg, int optind, int argc, char
 	for (i = 0, j = 0; i < len; i += 2, j++) {
 		//printf("%i, Tag: %s - Item: %s\n", i, argv[optind + i], argv[optind + i + 1]);
 		tags[j] = argv[optind + i];
-		items[j] = argv[optind + i + 1];
+		items[j] = StrdupConv(argv[optind + i + 1]);
 		tagLen = FontStringX(f->mText, tags[j]);
 		if (tagLen > maxTagLen) {
 			maxTagLen = tagLen;
@@ -197,8 +198,14 @@ int Menu(LcdSpi *lcd, Fonts *f, ScreenData *screenBg, int optind, int argc, char
 			break;
 		}
 	}
+	for (j = 0; j < optionLen; j++) {
+		if (items[j]) {
+			free(items[j]);
+		}
+	}
 	free(tags);
 	free(items);
+	ScreenDestroy(screen);
 	
 	return result;
 }

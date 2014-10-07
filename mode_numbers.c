@@ -29,6 +29,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include "lcd.h"
 #include "font.h"
 #include "lcdialog.h"
+#include "conv_str.h"
 
 #define IP_UP 0
 #define IP_DOWN 1
@@ -178,11 +179,11 @@ int Ipv4(LcdSpi *lcd, Fonts *f, char *ip, ScreenData *screenBg, int optind, int 
 	CursorData cur;
 	int mode = 0;
 	int setMode = 0;
-	char *text = "Set IPv4";
+	char *text = 0;
 	int a, b, c, d;
 	Rect viewPort;
 	
-	if (!lcd || !f || !text || !screenBg) {
+	if (!lcd || !f || !screenBg) {
 		return EXITCODE_ERROR;
 	}
 	screen = ScreenInit(LCD_X, LCD_Y);
@@ -191,7 +192,9 @@ int Ipv4(LcdSpi *lcd, Fonts *f, char *ip, ScreenData *screenBg, int optind, int 
 	}
 	
 	if (optind < argc) {
-		text = argv[optind];
+		text = StrdupConv(argv[optind]);
+	} else {
+		text = strdup("Set IPv4");
 	}
 
 	if (4 != sscanf(ip, "%d.%d.%d.%d", &a, &b, &c, &d)) {
@@ -330,6 +333,8 @@ int Ipv4(LcdSpi *lcd, Fonts *f, char *ip, ScreenData *screenBg, int optind, int 
 			break;
 		}
 	}
+	free(text);
+	ScreenDestroy(screen);
 	if (local_end) {
 		return result;
 	}
@@ -402,12 +407,12 @@ int Subnetmask(LcdSpi *lcd, Fonts *f, char *nmip, ScreenData *screenBg, int opti
 	CursorData cur;
 	int mode = 0;
 	int setMode = 0;
-	char *text = "Set subnet mask";
+	char *text = 0;
 	uint32_t cidr = 0;
 	int a, b, c, d;
 	Rect viewPort;
 	
-	if (!lcd || !f || !text || !screenBg) {
+	if (!lcd || !f || !screenBg) {
 		return EXITCODE_ERROR;
 	}
 	screen = ScreenInit(LCD_X, LCD_Y);
@@ -416,7 +421,9 @@ int Subnetmask(LcdSpi *lcd, Fonts *f, char *nmip, ScreenData *screenBg, int opti
 	}
 	
 	if (optind < argc) {
-		text = argv[optind];
+		text = StrdupConv(argv[optind]);
+	} else {
+		text = strdup("Set subnet mask");
 	}
 
 	if (4 != sscanf(nmip, "%d.%d.%d.%d", &a, &b, &c, &d)) {
@@ -550,6 +557,8 @@ int Subnetmask(LcdSpi *lcd, Fonts *f, char *nmip, ScreenData *screenBg, int opti
 			break;
 		}
 	}
+	free(text);
+	ScreenDestroy(screen);
 	if (localEnd) {
 		return result;
 	}
@@ -596,7 +605,7 @@ int IntInput(LcdSpi *lcd, Fonts *f, char *text, ScreenData *screenBg, int optind
 	if (len == 2) {
 		value = atoi(argv[optind]);
 		valueMax = atoi(argv[optind + 1]);
-		printf("%i %i\n", value, valueMax);
+		//printf("%i %i\n", value, valueMax);
 	} else {
 		return EXITCODE_ERROR;
 	}
@@ -725,6 +734,7 @@ int IntInput(LcdSpi *lcd, Fonts *f, char *text, ScreenData *screenBg, int optind
 			break;
 		}
 	}
+	ScreenDestroy(screen);
 	if (localEnd) {
 		return result;
 	}

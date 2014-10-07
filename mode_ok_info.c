@@ -43,6 +43,7 @@ void WriteText(LcdSpi *lcd, Fonts *f, const char* text, ScreenData *screenBg, ui
 	viewPort.mHeight = lines * 8;
 	FontScreenStringVp(f->mText, screen, viewPort, text, 0, JUSTIFY_LEFT);
 	LcdWriteImageScreen(lcd, screen);
+	ScreenDestroy(screen);
 }
 
 int Ok(LcdSpi *lcd, Fonts *f, char *text, ScreenData *screenBg)
@@ -88,6 +89,7 @@ int Ok(LcdSpi *lcd, Fonts *f, char *text, ScreenData *screenBg)
 			break;
 		}
 	}
+	ScreenDestroy(screen);
 	if (local_end) {
 		return result;
 	}
@@ -151,6 +153,7 @@ int YesNo(LcdSpi *lcd, Fonts *f, char *text, ScreenData *screenBg)
 			break;
 		}
 	}
+	ScreenDestroy(screen);
 	if (local_end) {
 		return result;
 	}

@@ -1,7 +1,7 @@
 CC=gcc
 CFLAGS=-Wall -DRPI_PULLUP -g
 OBJS=gpio.o font.o spi.o lcd.o screen.o mode_ok_info.o mode_menu.o \
-mode_numbers.o mode_bar.o
+mode_numbers.o mode_bar.o conv_str.o
 LDLIBS=-lgd -lm
 FONT_FILES=FONT7.h FONT11.h FONT23.h
 
@@ -9,7 +9,9 @@ all: fontconvert convert lcdialog
 
 lcdialog: $(OBJS)
 
-fontconvert: fontconvert.o font.o
+screen.o: fonts.h $(FONT_FILES)
+
+fontconvert: font.o
 
 convert: $(FONT_FILES)
 
@@ -22,7 +24,6 @@ FONT11.h: font11.mpf
 FONT23.h: font23.mpf
 	./fontconvert font23.mpf FONT23.h
 
-
 install:
 	install -o root -m u+srwx,g+rx,o+rx lcdialog /usr/sbin
 	mkdir -p /usr/local/share/man/man1/
@@ -33,4 +34,5 @@ install:
 clean:
 	rm -rf *.o
 	rm -rf lcdialog
+	rm -rf fontconvert
 	rm -rf $(FONT_FILES)

@@ -393,6 +393,7 @@ int ButtonGetCursor(LcdSpi *lcd, ScreenData *screen, CursorData cur)
 		val3_old = val3;
 		usleep(50 * 1000);
 	}
+	ScreenDestroy(screenOut);
 
 	return result;
 }
@@ -614,6 +615,7 @@ int ModeHandler(int mode, char *textIn, int argc, char **argv)
 	if (gConfig.mIsClear) {
 		LcdCls(lcd);
 	}
+	ScreenDestroy(screenBg);
 	LcdCleanup(lcd);
 	SpiDestroy(spiBus0);
 	
