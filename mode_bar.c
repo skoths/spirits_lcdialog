@@ -321,9 +321,15 @@ int Percent(LcdSpi *lcd, Fonts *f, char *text, ScreenData *screenBg, int optind,
 				value = valMin;
 			}
 			break;
+		case ASCII_CAN:
+			localEnd = 1;
+			result = EXITCODE_TIMEOUT;
+			break;
 		}
 		if (gConfig.mSingleStep) {
 			if (valueOld != value) {
+				ScreenDestroy(screen);
+				percent = ((double)(value - valMin) / (valMax - valMin)) * 100.0;
 				fprintf(stderr, "%i\n", (int)percent);
 				
 				return EXITCODE_EXTRA;

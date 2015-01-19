@@ -30,6 +30,7 @@ typedef struct
 	uint8_t mFontType;
 	uint8_t mSingleStep;
 	uint8_t mStepWidth;
+	uint32_t mTimeout;
 } Config;
 
 
@@ -46,7 +47,9 @@ typedef struct
 #define EXITCODE_CANCEL 1
 #define EXITCODE_HELP 2
 #define EXITCODE_EXTRA 3
+#define EXITCODE_TIMEOUT 4
 
+#define ASCII_CAN 0x18
 
 extern Config gConfig;
 extern uint8_t gEnde;

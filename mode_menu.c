@@ -196,6 +196,10 @@ int Menu(LcdSpi *lcd, Fonts *f, ScreenData *screenBg, int optind, int argc, char
 				}
 			}
 			break;
+		case ASCII_CAN:
+			local_end = 1;
+			result = EXITCODE_TIMEOUT;
+			break;
 		}
 	}
 	for (j = 0; j < optionLen; j++) {

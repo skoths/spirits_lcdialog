@@ -87,6 +87,10 @@ int Ok(LcdSpi *lcd, Fonts *f, char *text, ScreenData *screenBg)
 			local_end = 1;
 			result = EXITCODE_OK;
 			break;
+		case ASCII_CAN:
+			local_end = 1;
+			result = EXITCODE_TIMEOUT;
+			break;
 		}
 	}
 	ScreenDestroy(screen);
@@ -150,6 +154,10 @@ int YesNo(LcdSpi *lcd, Fonts *f, char *text, ScreenData *screenBg)
 		case '3':
 			result = EXITCODE_CANCEL;
 			local_end = 1;
+			break;
+		case ASCII_CAN:
+			local_end = 1;
+			result = EXITCODE_TIMEOUT;
 			break;
 		}
 	}

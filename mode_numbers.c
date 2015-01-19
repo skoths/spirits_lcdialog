@@ -164,7 +164,7 @@ void SetIp(IpBytes *ipb, int pos, uint8_t dirDown)
 int Ipv4(LcdSpi *lcd, Fonts *f, char *ip, ScreenData *screenBg, int optind, int argc, char **argv)
 {
 	int button;
-	int local_end = 0;
+	int localEnd = 0;
 	int result = EXITCODE_ERROR;
 	ScreenData *screen;
 	char textSet[10];
@@ -208,7 +208,7 @@ int Ipv4(LcdSpi *lcd, Fonts *f, char *ip, ScreenData *screenBg, int optind, int 
 	
 	CatchCtrlC();
 	ButtonInit();
-	while (!gEnde && !local_end) {
+	while (!gEnde && !localEnd) {
 		ScreenCopy(screen, screenBg);
 	
 		viewPort.mX = 0;
@@ -281,7 +281,7 @@ int Ipv4(LcdSpi *lcd, Fonts *f, char *ip, ScreenData *screenBg, int optind, int 
 		
 		case '2': // ok
 			if (posZiffer == 20) {
-				local_end = 1;
+				localEnd = 1;
 				result = EXITCODE_OK;
 				if (inet_ntop(AF_INET, &ipb, output, sizeof(output) - 1)) {
 					fprintf(stderr, "%s\n", output);
@@ -289,7 +289,7 @@ int Ipv4(LcdSpi *lcd, Fonts *f, char *ip, ScreenData *screenBg, int optind, int 
 					fprintf(stderr, "0.0.0.0\n");
 				}
 			} else if (posZiffer == 21) {
-				local_end = 1;
+				localEnd = 1;
 				result = EXITCODE_CANCEL;
 			} else {
 				if (mode == 0) {
@@ -331,11 +331,15 @@ int Ipv4(LcdSpi *lcd, Fonts *f, char *ip, ScreenData *screenBg, int optind, int 
 				SetIp(&ipb, posZiffer, IP_DOWN);
 			}
 			break;
+		case ASCII_CAN:
+			localEnd = 1;
+			result = EXITCODE_TIMEOUT;
+			break;
 		}
 	}
 	free(text);
 	ScreenDestroy(screen);
-	if (local_end) {
+	if (localEnd) {
 		return result;
 	}
 	
@@ -555,6 +559,10 @@ int Subnetmask(LcdSpi *lcd, Fonts *f, char *nmip, ScreenData *screenBg, int opti
 				SetIntegerCidr(&cidr, posZiffer, IP_DOWN);
 			}
 			break;
+		case ASCII_CAN:
+			localEnd = 1;
+			result = EXITCODE_TIMEOUT;
+			break;
 		}
 	}
 	free(text);
@@ -731,6 +739,10 @@ int IntInput(LcdSpi *lcd, Fonts *f, char *text, ScreenData *screenBg, int optind
 			} else {
 				SetInteger(&value, valueMax, posZiffer - posValue, IP_DOWN);
 			}
+			break;
+		case ASCII_CAN:
+			localEnd = 1;
+			result = EXITCODE_TIMEOUT;
 			break;
 		}
 	}

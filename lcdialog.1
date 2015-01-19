@@ -68,6 +68,9 @@ Increment for "\-\-percent", default is 5.
 .B \-\-singlestep
 In mode "\-\-percent" every change will output the value and exit with EXITCODE_EXTRA.
 .TP
+.B \-\-timeout" seconds"
+After the specified time the program will exit with EXITCODE_TIMEOUT.
+.TP
 .BI \-\-bgimg " filename"
 Set filename for background image.
 .TP
@@ -102,7 +105,7 @@ The exitcode depends on the button pressed or if some error occurred.
 Ok, Yes and a Menu-selection will result in 0 (EXITCODE_OK). Cancel or No will be 1 (EXITCODE_CANCEL).
 In Error conditions -1 (EXITCODE_ERROR) is returned.
 The help output returns 2 (EXITCODE_HELP). A optional extra button results in 3
-(EXITCODE_EXTRA).
+(EXITCODE_EXTRA). For the timeout-event 4 (EXITCODE_TIMEOUT) is returned.
 
 .SH COPYRIGHT
 Copyright \(co 2014 Stephan Ruloff.

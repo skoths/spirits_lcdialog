@@ -78,6 +78,9 @@ Schrittweite für "\-\-percent", der Standard-Wert ist 5.
 .B \-\-singlestep
 Im Mode "\-\-percent" wird bei jeder Änderung der Wert ausgegeben und mit EXITCODE_EXTRA beendet.
 .TP
+.B \-\-timeout " seconds"
+Nach der angegebenen Zeit (in Sekunden) wird das Programm mit EXITCODE_TIMEOUT beendet.
+.TP
 .BI \-\-bgimg " filename"
 Setzt den Dateinamen des Hintergrundbilds.
 .TP
@@ -112,7 +115,8 @@ interne ISO-8859-1 gewandelt.
 Der Rückgabewert hängt von den ausgewählten Tastern ab, oder ob ein Fehler auftritt.
 Ok, ja oder eine Menüauswahl resultieren in 0 (EXITCODE_OK). Bei Abbruch oder nein gibt es 1 (EXITCODE_CANCEL).
 Bei Fehlern wird -1 (EXITCODE_ERROR) zurückgegeben. Der Hilfetext gibt 2 (EXITCODE_HELP) zurück. 
-Der optionale Zusatzrückgabewert ist 3 (EXITCODE_EXTRA).
+Der optionale Zusatzrückgabewert ist 3 (EXITCODE_EXTRA). Im Timout-Fall wird 4 (EXITCODE_TIMEOUT)
+zurückgegeben.
 
 .SH COPYRIGHT
 Copyright \(co 2014 Stephan Ruloff.

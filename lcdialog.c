@@ -34,6 +34,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include <errno.h>
 #include <arpa/inet.h>
 #include <iconv.h>
+#include <sys/time.h>
 
 #include "lcdialog.h"
 #include "lcd.h"
@@ -49,6 +50,7 @@ typedef enum {
 		OPT_BUTTONWAIT, OPT_INTINPUT, OPT_PROGRESS, OPT_PERCENT,
 		
 		OPT_BGIMG, OPT_BGLIGHT, OPT_STEP_WIDTH, OPT_SINGLE_STEP,
+		OPT_TIMEOUT,
 		
 		OPT_INIT, OPT_UNINIT, OPT_CLEAR,
 		
@@ -72,6 +74,7 @@ static struct option sLongOptions[] = {
 		{"bglight", required_argument, 0, OPT_BGLIGHT},
 		{"stepwidth", required_argument, 0, OPT_STEP_WIDTH},
 		{"singlestep", no_argument, 0, OPT_SINGLE_STEP},
+		{"timeout", required_argument, 0, OPT_TIMEOUT},
 
 		{"init", no_argument, 0, OPT_INIT},
 		{"uninit", no_argument, 0, OPT_UNINIT},
@@ -198,6 +201,15 @@ char* GetFilenameWithoutAddon(char* filename)
 	return result;
 }
 
+long int GetTime(void)
+{
+	struct timeval tv;
+	
+	gettimeofday(&tv, NULL);
+
+	return tv.tv_sec;
+}
+
 void ButtonInit(void)
 {
 	GpioExport(PIN_KEY_1);
@@ -224,6 +236,8 @@ int ButtonGet(void)
 	int fd1;
 	int fd2;
 	int fd3;
+	long int start;
+	long int end;
 #if 0
 	struct pollfd pollKey[3];
 	int retPoll;
@@ -299,7 +313,15 @@ int ButtonGet(void)
 	GpioFdClose(fd3);
 #endif
 
+	start = GetTime();
 	while (!gEnde) {
+		if (gConfig.mTimeout) {
+			end = GetTime();
+			if (end - start >= gConfig.mTimeout) {
+				result = ASCII_CAN;
+				break;
+			}
+		}
 		GpioGetValue(PIN_KEY_1, &val1);
 		GpioGetValue(PIN_KEY_2, &val2);
 		GpioGetValue(PIN_KEY_3, &val3);
@@ -344,6 +366,8 @@ int ButtonGetCursor(LcdSpi *lcd, ScreenData *screen, CursorData cur)
 	int result = 0;
 	int counter = COUNTER_MAX;
 	ScreenData *screenOut;
+	long int start;
+	long int end;
 	
 	ret = 0;
 	ret += GpioFdOpen(PIN_KEY_1, &fd1);
@@ -359,8 +383,15 @@ int ButtonGetCursor(LcdSpi *lcd, ScreenData *screen, CursorData cur)
 	}
 	screenOut = ScreenInit(screen->mX, screen->mY);
 	ScreenCopy(screenOut, screen);
-
+	start = GetTime();
 	while (!gEnde) {
+		if (gConfig.mTimeout) {
+			end = GetTime();
+			if (end - start >= gConfig.mTimeout) {
+				result = ASCII_CAN;
+				break;
+			}
+		}
 		counter++;
 		if (counter > COUNTER_MAX) {
 			ScreenBlink(screenOut, cur);
@@ -416,6 +447,8 @@ int ButtonWait(void)
 		return EXITCODE_CANCEL;
 	case '3':
 		return EXITCODE_EXTRA;
+	case ASCII_CAN:
+		return EXITCODE_TIMEOUT;
 	}
 	
 	return EXITCODE_ERROR;
@@ -504,8 +537,8 @@ int ModeHandler(int mode, char *textIn, int argc, char **argv)
 	int result = 0;
 	Fonts font;
 	iconv_t ic;
-    size_t res;
-    char text[MAX_ISO8859_LEN] = "";
+	size_t res;
+	char text[MAX_ISO8859_LEN] = "";
 	
 	memset(&font, 0, sizeof(Fonts));
 	spiBus0 = SpiCreate(0);
@@ -647,6 +680,7 @@ void Usage(void)
 	printf("  --notag\n");
 	printf("  --stepwidth <witdh>\n");
 	printf("  --singlestep\n");
+	printf("  --timeout\n");
 	printf("  --menuindex <tag>\n");
 	printf("  --bgimg <filename>\n");
 	printf("  --bglight <color-code>\n");
@@ -706,6 +740,10 @@ int main(int argc, char **argv)
 		case OPT_BGLIGHT:
 			gConfig.mIsBgLight = 1;
 			gConfig.mBgLight = atoi(optarg);
+			break;
+
+		case OPT_TIMEOUT:
+			gConfig.mTimeout = atoi(optarg);
 			break;
 			
 		case OPT_INIT:

@@ -178,6 +178,9 @@ Options
  --singlestep
 	In mode "--percent" every change will output the value and exit with EXITCODE_EXTRA.
 	
+ --timeout <seconds>
+	After the specified time the program will exit with EXITCODE_TIMEOUT.
+	
  --bgimg <filename>[:+x+y]
 	Set filename for background image.
 	The optional offset at the end will position the image on the screen.
