@@ -2,7 +2,7 @@ CC=gcc
 CFLAGS=-Wall -DRPI_PULLUP -g
 OBJS=gpio.o font.o spi.o lcd.o screen.o mode_ok_info.o mode_menu.o \
 mode_numbers.o mode_bar.o conv_str.o
-LDLIBS=-lgd -lm
+LDLIBS=-lgd -lm -liconv
 FONT_FILES=FONT7.h FONT11.h FONT23.h
 
 all: fontconvert convert lcdialog
