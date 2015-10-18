@@ -33,11 +33,6 @@ typedef struct
 	uint32_t mTimeout;
 } Config;
 
-
-#define PIN_KEY_1 23
-#define PIN_KEY_2 24
-#define PIN_KEY_3 25
-
 #define BUTTON_POS_LEFT 21
 #define BUTTON_POS_CENTER 66
 #define BUTTON_POS_RIGHT 110

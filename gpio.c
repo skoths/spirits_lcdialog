@@ -33,6 +33,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include <sys/stat.h>
 
 #include "gpio.h"
+#include "config.h"
 
 
 static char *triggerName[] = {
@@ -49,6 +50,12 @@ static char *edgeName[] = {
 	"rising", 
 	"falling", 
 	"both", 
+};
+
+static char *pullName[] = {
+	"up",
+	"down", 
+	"disable", 
 };
 
 /**
@@ -276,6 +283,30 @@ uint8_t GpioSetEdge(uint8_t pin, Edge edge)
 	return 1;
 }
 
+/**
+Set the pull-up/down resistor
+@param[in] pin The GPIO pin
+@param[in] pull The pull-type
+@retval 0 Error
+@retval 1 Ok
+*/
+uint8_t GpioSetPullResistor(uint8_t pin, PullResistor pull)
+{
+	char pfad[128];
+	FILE *f;
+	
+	snprintf(pfad, 128, "/sys/class/gpio/gpio%i/pull", pin);
+	f = fopen(pfad, "w");
+	if (f == NULL) {
+		return 0;
+	}
+	fprintf(f, "%s", pullName[pull]);
+	fclose(f);
+	
+	return 1;
+}
+
+
 uint8_t GpioFdOpen(uint8_t pin, int *fd)
 {
 	char pfad[128];
@@ -309,7 +340,8 @@ uint8_t GpioFdClose(int fd)
 #include <sys/mman.h>
 
 #define BCM2708_PERI_BASE        0x20000000
-#define GPIO_BASE                (BCM2708_PERI_BASE + 0x200000) /* GPIO controller */
+#define BCM2709_PERI_BASE        0x3f000000
+#define GPIO_BASE_OFFSET          0x200000
 
 #define FSEL_OFFSET 0 // 0x0000
 #define SET_OFFSET 7 // 0x001c / 4
@@ -344,11 +376,56 @@ volatile unsigned *gpio;
 /* Set up a memory regions to access GPIO */
 void GpioRpiSetup(void)
 {
-	int  mem_fd;
-	
+	int mem_fd;
+	uint32_t peri_base;
+	uint32_t gpio_base;
+	unsigned char buf[4];
+	FILE *fp;
+	char buffer[1024];
+	char hardware[1024];
+	int found = 0;            
+
+	// Based on "pasberyy-gpio-python", file "c_gpio.c"
+	// determine peri_base
+	if ((fp = fopen("/proc/device-tree/soc/ranges", "rb")) != NULL) {
+		// get peri base from device tree
+		fseek(fp, 4, SEEK_SET);
+		if (fread(buf, 1, sizeof buf, fp) == sizeof buf) {
+			peri_base = buf[0] << 24 | buf[1] << 16 | buf[2] << 8 | buf[3] << 0;
+		}
+		fclose(fp);
+	} else {
+		// guess peri base based on /proc/cpuinfo hardware field
+		if ((fp = fopen("/proc/cpuinfo", "r")) == NULL) {
+			printf("can't open /proc/cpuinfo\n");
+			exit(-1);
+		}
+	                                                                                            
+		while(!feof(fp) && !found) {
+			fgets(buffer, sizeof(buffer), fp);
+			sscanf(buffer, "Hardware	: %s", hardware);
+			if (strcmp(hardware, "BCM2708") == 0 || strcmp(hardware, "BCM2835") == 0) {
+				// pi 1 hardware
+				peri_base = BCM2708_PERI_BASE;
+				found = 1;
+			} else if (strcmp(hardware, "BCM2709") == 0 || strcmp(hardware, "BCM2836") == 0) {
+				// pi 2 hardware
+				peri_base = BCM2709_PERI_BASE;
+				found = 1;
+			}
+		}
+		fclose(fp);
+		if (!found) {
+			printf("can't find 'Hardware'\n");
+			exit(-1);
+		}
+	}
+
+	gpio_base = peri_base + GPIO_BASE_OFFSET;																																	    
+
 	/* open /dev/mem */
 	if ((mem_fd = open("/dev/mem", O_RDWR|O_SYNC) ) < 0) {
-		printf("can't open /dev/mem \n");
+		printf("can't open /dev/mem\n");
 		exit(-1);
 	}
 
@@ -359,7 +436,7 @@ void GpioRpiSetup(void)
 			PROT_READ | PROT_WRITE,// Enable reading & writting to mapped memory
 			MAP_SHARED,       //Shared with other processes
 			mem_fd,           //File to map
-			GPIO_BASE         //Offset to GPIO peripheral
+			gpio_base         //Offset to GPIO peripheral
 	);
 
 	close(mem_fd); //No need to keep mem_fd open after mmap

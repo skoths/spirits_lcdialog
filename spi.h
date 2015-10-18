@@ -26,9 +26,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include <stdint.h>
 #include <unistd.h>
 
-#define SPI_BUS    0
-#define SPI_DEVICE 0
-#define MAXPATH    16
+#define MAXPATHNAME    16
 
 //#define TRANSFER_LEN   3
 #define TRANSFER_DELAY 5
