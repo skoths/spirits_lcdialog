@@ -30,14 +30,15 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include <linux/types.h>
 #include <sys/ioctl.h>
 
+#include "config.h"
 #include "spi.h"
 
 Spi* SpiCreate(int device)
 {
 	Spi *s;
-	char path[MAXPATH];
-    uint8_t value8;
-    uint32_t value32;
+	char path[MAXPATHNAME];
+	uint8_t value8;
+	uint32_t value32;
 
 	s = (Spi*)malloc(sizeof(Spi));
 	
@@ -46,7 +47,7 @@ Spi* SpiCreate(int device)
 	}
 	
 	s->mDevice = device;
-    if (snprintf(path, MAXPATH, "/dev/spidev%d.%d", SPI_BUS, device) >= MAXPATH) {
+    if (snprintf(path, MAXPATHNAME, "/dev/spidev%d.%d", SPI_BUS, device) >= MAXPATHNAME) {
 		free(s);
 		
         return NULL;

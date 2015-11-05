@@ -36,6 +36,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include <iconv.h>
 #include <sys/time.h>
 
+#include "config.h"
 #include "lcdialog.h"
 #include "lcd.h"
 #include "gpio.h"
@@ -227,6 +228,12 @@ void ButtonInit(void)
 	GpioRpiSetPullUpDown(PIN_KEY_1, PUD_UP);
 	GpioRpiSetPullUpDown(PIN_KEY_2, PUD_UP);
 	GpioRpiSetPullUpDown(PIN_KEY_3, PUD_UP);
+#endif
+
+#ifdef BPI_PULLUP
+	GpioSetPullResistor(PIN_KEY_1, pull_up);
+	GpioSetPullResistor(PIN_KEY_2, pull_up);
+	GpioSetPullResistor(PIN_KEY_3, pull_up);
 #endif
 }
 

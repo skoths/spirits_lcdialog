@@ -11,17 +11,11 @@
 
 #include <gd.h>
 
+#include "config.h"
 #include "lcd.h"
 #include "gpio.h"
 #include "font.h"
 
-/* GPIO for control and backlight */
-#define PIN_LED_RED 22
-#define PIN_LED_GREEN 17
-#define PIN_LED_BLUE 27
-
-#define PIN_LCD_nRST 4
-#define PIN_LCD_A0 18
 
 static uint32_t gNextFileIndex = 0;
 static uint8_t gDebuglevel = 0;
